@@ -1,6 +1,6 @@
 {
   "installCommand": "pnpm install",
-  "buildCommand": "pnpm postinstall && next build",
+  "buildCommand": "pnpm vercel-build",
   "crons": [
     {
       "path": "/api/cron/deactivate-interns",
