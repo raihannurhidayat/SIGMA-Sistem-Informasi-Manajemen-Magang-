@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { requirePermission } from "@/lib/auth/authorize";
 import { generateDocumentNumber } from "../utils/document-number";
+import { getMissingDocumentFields } from "../utils/document-completeness";
 import { generateFromTemplate } from "@/lib/docxtemplater";
 import { generateCertificatePdf, type TextField } from "@/lib/pdf-certificate";
 import type { ActionResponse } from "@/lib/types";
@@ -67,7 +68,6 @@ export async function validateInternsCompleteness(
 
   for (const user of users) {
     const intern = user.internProfile;
-    const missingFields: string[] = [];
 
     if (!intern) {
       errors.push({
@@ -78,44 +78,25 @@ export async function validateInternsCompleteness(
     }
 
     const supervisor = intern.supervisorAssignments[0]?.supervisorProfile;
+    const assessment = intern.assessments[0];
 
-    if (!user.name) missingFields.push("Nama peserta");
-    if (!intern.nik) missingFields.push("NIK");
-    if (!intern.institution) missingFields.push("Institusi");
-    if (!intern.team?.name) missingFields.push("Team");
-    if (!intern.periodStart) missingFields.push("Tanggal mulai");
-    if (!intern.periodEnd) missingFields.push("Tanggal selesai");
-
-    switch (documentType) {
-      case DocumentType.certificate:
-      case DocumentType.assignment_letter:
-      case DocumentType.completion_letter:
-        if (!supervisor) {
-          missingFields.push("Pembimbing lapangan belum ditetapkan");
-        } else {
-          if (!supervisor.user?.name) missingFields.push("Nama pembimbing");
-          if (!supervisor.nip) missingFields.push("NIP pembimbing");
-        }
-        break;
-
-      case DocumentType.assessment_report:
-        if (!supervisor) {
-          missingFields.push("Pembimbing lapangan belum ditetapkan");
-        } else {
-          if (!supervisor.user?.name) missingFields.push("Nama pembimbing");
-          if (!supervisor.nip) missingFields.push("NIP pembimbing");
-        }
-        if (!intern.assessments?.[0]) {
-          missingFields.push("Data penilaian (nilai akhir, nilai huruf) belum diisi oleh pembimbing");
-        } else {
-          if (intern.assessments[0].finalScore == null) missingFields.push("Skor akhir penilaian");
-          if (!intern.assessments[0].finalGrade) missingFields.push("Nilai huruf akhir");
-        }
-        break;
-
-      case DocumentType.attendance_report:
-        break;
-    }
+    const missingFields = getMissingDocumentFields(
+      {
+        name: user.name,
+        nik: intern.nik,
+        institution: intern.institution,
+        teamName: intern.team?.name ?? null,
+        periodStart: intern.periodStart,
+        periodEnd: intern.periodEnd,
+        hasSupervisor: Boolean(supervisor),
+        supervisorName: supervisor?.user?.name ?? null,
+        supervisorNip: supervisor?.nip ?? null,
+        hasAssessment: Boolean(assessment),
+        finalScore: assessment?.finalScore ?? null,
+        finalGrade: assessment?.finalGrade ?? null,
+      },
+      documentType,
+    );
 
     if (missingFields.length > 0) {
       errors.push({ internName: user.name, missingFields });
