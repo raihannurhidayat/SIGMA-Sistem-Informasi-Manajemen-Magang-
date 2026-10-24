@@ -26,6 +26,7 @@ import {
   type CertificateTemplateInfo,
 } from "../../actions/certificate-template-actions";
 import type { TextField } from "@/lib/pdf-certificate";
+import { buildCertificateTestFilename } from "@/lib/document-filename";
 import PdfPreview from "./pdf-preview";
 
 const FIELD_LABELS: Record<string, string> = {
@@ -153,7 +154,7 @@ export default function FieldConfigurator({ template, onComplete }: Props) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `test-${template.name.replace(/\s+/g, "-")}.pdf`;
+      a.download = buildCertificateTestFilename(template.name, new Date());
       a.click();
       URL.revokeObjectURL(url);
     } catch {

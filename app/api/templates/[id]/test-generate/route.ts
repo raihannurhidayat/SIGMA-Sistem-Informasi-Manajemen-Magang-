@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import {
+  buildCertificateTestFilename,
+  buildContentDisposition,
+} from "@/lib/document-filename";
 import { getObjectBuffer } from "@/services/storage";
 import {
   generateCertificatePdf,
@@ -28,7 +32,7 @@ export async function POST(
 
   const template = await prisma.documentTemplate.findUnique({
     where: { id },
-    select: { content: true },
+    select: { content: true, name: true },
   });
 
   if (!template) {
@@ -71,10 +75,12 @@ export async function POST(
     );
   }
 
+  const filename = buildCertificateTestFilename(template.name, new Date());
+
   return new Response(new Uint8Array(pdfBuffer), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="test-certificate.pdf"`,
+      "Content-Disposition": buildContentDisposition(filename, "attachment"),
     },
   });
 }

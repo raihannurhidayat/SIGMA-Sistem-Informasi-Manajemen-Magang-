@@ -11,6 +11,7 @@ import {
 } from "@/components/shared/data-table/column-helpers";
 import { DocumentType } from "@/generated/prisma/enums";
 
+import { getMissingDocumentFields } from "../../utils/document-completeness";
 import type { DocumentRow } from "../../types/document-types";
 
 function formatDate(date: Date) {
@@ -24,43 +25,37 @@ function formatDate(date: Date) {
 type Completeness = {
   label: string;
   variant: "default" | "secondary" | "destructive" | "outline";
+  missingFields: string[];
 };
 
 function checkCompleteness(row: DocumentRow, tab: DocumentType): Completeness {
   const intern = row.internProfile;
   const supervisor = intern?.supervisorAssignments?.[0]?.supervisorProfile;
-  const hasSupervisor = Boolean(supervisor?.user?.name && supervisor?.nip);
+  const assessment = intern?.assessments?.[0];
 
-  const hasBasicData = Boolean(
-    row.name && intern?.nik && intern?.institution && intern?.team?.name &&
-    intern?.periodStart && intern?.periodEnd,
+  const missingFields = getMissingDocumentFields(
+    {
+      name: row.name,
+      nik: intern?.nik ?? null,
+      institution: intern?.institution ?? null,
+      teamName: intern?.team?.name ?? null,
+      periodStart: intern?.periodStart ?? null,
+      periodEnd: intern?.periodEnd ?? null,
+      hasSupervisor: Boolean(supervisor),
+      supervisorName: supervisor?.user?.name ?? null,
+      supervisorNip: supervisor?.nip ?? null,
+      hasAssessment: Boolean(assessment),
+      finalScore: assessment?.finalScore ?? null,
+      finalGrade: assessment?.finalGrade ?? null,
+    },
+    tab,
   );
 
-  if (!hasBasicData) {
-    return { label: "Tidak Lengkap", variant: "destructive" };
+  if (missingFields.length > 0) {
+    return { label: "Tidak Lengkap", variant: "destructive", missingFields };
   }
 
-  switch (tab) {
-    case DocumentType.assignment_letter:
-    case DocumentType.completion_letter:
-    case DocumentType.certificate:
-      if (!hasSupervisor) {
-        return { label: "Tidak Lengkap", variant: "destructive" };
-      }
-      return { label: "Lengkap", variant: "default" };
-
-    case DocumentType.assessment_report:
-      if (!hasSupervisor) {
-        return { label: "Tidak Lengkap", variant: "destructive" };
-      }
-      return { label: "Lengkap", variant: "default" };
-
-    case DocumentType.attendance_report:
-      return { label: "Lengkap", variant: "default" };
-
-    default:
-      return { label: "Lengkap", variant: "default" };
-  }
+  return { label: "Lengkap", variant: "default", missingFields: [] };
 }
 
 export function createColumns(
@@ -110,8 +105,23 @@ export function createColumns(
       id: "dataCompleteness",
       header: "Kelengkapan Data",
       cell: ({ row }) => {
-        const { label, variant } = checkCompleteness(row.original, activeTab);
-        return <Badge variant={variant}>{label}</Badge>;
+        const { label, variant, missingFields } = checkCompleteness(
+          row.original,
+          activeTab,
+        );
+
+        return (
+          <Badge
+            variant={variant}
+            title={
+              missingFields.length > 0
+                ? `Belum lengkap: ${missingFields.join(", ")}`
+                : undefined
+            }
+          >
+            {label}
+          </Badge>
+        );
       },
     },
   ];

@@ -18,6 +18,11 @@ const documentInclude = {
           },
         },
       },
+      assessments: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+        select: { finalScore: true, finalGrade: true },
+      },
     },
   },
 } as const;
