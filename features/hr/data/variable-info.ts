@@ -24,8 +24,6 @@ export const VARIABLE_INFO: Record<string, { name: string; description: string; 
     { name: "nama_pembimbing", description: "Nama pembimbing lapangan" },
     { name: "nip_pembimbing", description: "NIP pembimbing lapangan" },
     { name: "tanggal_surat", description: "Tanggal surat diterbitkan" },
-    { name: "ttd_nama", description: "Nama penandatangan (diisi manual saat TTE)" },
-    { name: "ttd_nip", description: "NIP penandatangan (diisi manual saat TTE)" },
   ],
   assessment_report: [
     { name: "nama_peserta", description: "Nama lengkap peserta magang" },
@@ -50,8 +48,6 @@ export const VARIABLE_INFO: Record<string, { name: string; description: string; 
     { name: "total_hadir", description: "Total hari hadir" },
     { name: "total_izin", description: "Total hari izin" },
     { name: "total_alpha", description: "Total hari alpha" },
-    { name: "ttd_nama", description: "Nama penandatangan (diisi manual saat TTE)" },
-    { name: "ttd_nip", description: "NIP penandatangan (diisi manual saat TTE)" },
     { name: "tanggal_surat", description: "Tanggal surat" },
   ],
   completion_letter: [
@@ -64,7 +60,5 @@ export const VARIABLE_INFO: Record<string, { name: string; description: string; 
     { name: "tanggal_mulai", description: "Tanggal mulai" },
     { name: "tanggal_selesai", description: "Tanggal selesai" },
     { name: "tanggal_surat", description: "Tanggal surat" },
-    { name: "ttd_nama", description: "Nama penandatangan (diisi manual saat TTE)" },
-    { name: "ttd_nip", description: "NIP penandatangan (diisi manual saat TTE)" },
   ],
 };

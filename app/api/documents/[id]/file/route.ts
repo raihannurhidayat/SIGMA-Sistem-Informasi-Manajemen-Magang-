@@ -1,5 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import {
+  buildContentDisposition,
+  buildDocumentFilename,
+  extensionFromContentType,
+  extensionFromKey,
+} from "@/lib/document-filename";
 import { getObjectStream } from "@/services/storage";
 import { assertStorageHealthy, StorageError } from "@/services/storage-health";
 
@@ -16,7 +22,12 @@ export async function GET(
         { internProfile: { userId: id } },
       ],
     },
-    select: { fileUrl: true, documentType: true },
+    select: {
+      fileUrl: true,
+      documentType: true,
+      createdAt: true,
+      internProfile: { select: { user: { select: { name: true } } } },
+    },
   });
 
   if (!document?.fileUrl) {
@@ -27,11 +38,19 @@ export async function GET(
 
   try {
     const { stream, contentType } = await getObjectStream(document.fileUrl);
+    const extension =
+      extensionFromKey(document.fileUrl) || extensionFromContentType(contentType);
+    const filename = buildDocumentFilename(
+      document.documentType,
+      document.internProfile.user.name,
+      document.createdAt,
+      extension,
+    );
 
     return new Response(stream, {
       headers: {
         "Content-Type": contentType,
-        "Content-Disposition": "inline",
+        "Content-Disposition": buildContentDisposition(filename),
         "Cache-Control": "private, max-age=3600",
       },
     });

@@ -263,8 +263,6 @@ function getVariablesForType(documentType: string): string[] {
         "nama_pembimbing",
         "nip_pembimbing",
         "tanggal_surat",
-        "ttd_nama",
-        "ttd_nip",
       ];
     case "assessment_report":
       return [
@@ -291,8 +289,6 @@ function getVariablesForType(documentType: string): string[] {
         "total_hadir",
         "total_izin",
         "total_alpha",
-        "ttd_nama",
-        "ttd_nip",
         "tanggal_surat",
       ];
     case "completion_letter":
@@ -306,8 +302,6 @@ function getVariablesForType(documentType: string): string[] {
         "tanggal_mulai",
         "tanggal_selesai",
         "tanggal_surat",
-        "ttd_nama",
-        "ttd_nip",
       ];
     case "certificate":
       return [
