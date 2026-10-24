@@ -44,16 +44,6 @@ async function InternSidebar({ children }: { children: React.ReactNode }) {
         icon: <BookOpen className="size-4" />,
       },
       {
-        title: "Absensi",
-        url: "/intern/absensi",
-        icon: <Clock className="size-4" />,
-      },
-      {
-        title: "Bimbingan",
-        url: "/intern/bimbingan",
-        icon: <MessageSquare className="size-4" />,
-      },
-      {
         title: "Dokumen",
         url: "/intern/dokumen",
         icon: <FileText className="size-4" />,
