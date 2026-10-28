@@ -80,7 +80,7 @@ export default function InternPage({ interns, teams }: InternPageProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-start md:items-center justify-between flex-col gap-2 md:gap-0 md:flex-row">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
             Manajemen Intern
@@ -89,7 +89,7 @@ export default function InternPage({ interns, teams }: InternPageProps) {
             Kelola data peserta magang
           </p>
         </div>
-        <Button onClick={() => setCreateOpen(true)} className="gap-2">
+        <Button onClick={() => setCreateOpen(true)} className="gap-2 w-full md:w-fit">
           <PlusIcon className="size-4" />
           Tambah Intern
         </Button>
