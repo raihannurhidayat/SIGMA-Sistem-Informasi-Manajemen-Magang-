@@ -174,7 +174,7 @@ export default function TemplatePage({
         </CardHeader>
         <CardContent>
           <form ref={formRef} onSubmit={handleUpload} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Nama Template</Label>
                 <Input
@@ -214,13 +214,13 @@ export default function TemplatePage({
                   <p className="mb-2">
                     Template {DOCUMENT_TYPE_LABELS[selectedType]?.toLowerCase() ?? selectedType} mendukung placeholder berikut:
                   </p>
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                  <div className="grid grid-cols-1 gap-x-4 gap-y-1 md:grid-cols-2">
                     {VARIABLE_INFO[selectedType].map((v) => (
-                      <div key={v.name} className="flex items-baseline gap-1.5">
+                      <div key={v.name} className="flex min-w-0 items-baseline gap-1.5">
                         <code className="text-[11px] font-mono font-medium text-foreground whitespace-nowrap">
                           {"{" + v.name + "}"}
                         </code>
-                        <span className="text-[11px] text-muted-foreground">
+                        <span className="break-words text-[11px] text-muted-foreground">
                           {v.isLoop ? "Looping: " : ""}{v.description}
                         </span>
                       </div>
@@ -245,7 +245,7 @@ export default function TemplatePage({
                 required
               />
             </div>
-            <Button type="submit" disabled={uploadPending} className="gap-2">
+            <Button type="submit" disabled={uploadPending} className="w-full gap-2 md:w-fit">
               <Upload className="size-4" />
               {uploadPending ? "Mengupload..." : "Upload Template"}
             </Button>
@@ -255,15 +255,19 @@ export default function TemplatePage({
 
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+            <div className="min-w-0">
               <CardTitle>Template Sertifikat</CardTitle>
               <CardDescription>
                 Upload desain sertifikat dari Canva (export PDF), lalu atur posisi setiap field teks
               </CardDescription>
             </div>
             {!showCertUpload && !certConfigTarget && (
-              <Button variant="outline" onClick={() => setShowCertUpload(true)} className="gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowCertUpload(true)}
+                className="w-full shrink-0 gap-2 md:w-fit"
+              >
                 <Image className="size-4" />
                 Upload Template Sertifikat
               </Button>
@@ -292,13 +296,13 @@ export default function TemplatePage({
               {certTemplates.map((template) => (
                 <div
                   key={template.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className="flex flex-col gap-3 rounded-lg border p-4 md:flex-row md:items-center md:justify-between"
                 >
-                  <div className="flex items-start gap-3">
-                    <Image className="size-5 mt-0.5 text-muted-foreground" />
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{template.name}</span>
+                  <div className="flex min-w-0 flex-1 items-start gap-3">
+                    <Image className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="min-w-0 break-words font-medium">{template.name}</span>
                         {template.isActive ? (
                           <Badge className="bg-green-600">Aktif</Badge>
                         ) : (
@@ -313,14 +317,14 @@ export default function TemplatePage({
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2 md:justify-end">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => {
                         setCertConfigTarget(template);
                       }}
-                      className="gap-1"
+                      className="flex-1 gap-1 md:flex-none"
                     >
                       {template.isActive ? (
                         <Pencil className="size-3" />
@@ -333,7 +337,7 @@ export default function TemplatePage({
                       variant="ghost"
                       size="sm"
                       onClick={() => handleDeleteCert(template.id)}
-                      className="text-destructive gap-1"
+                      className="flex-1 text-destructive gap-1 md:flex-none"
                     >
                       <Trash2 className="size-3" />
                       Hapus
@@ -363,13 +367,13 @@ export default function TemplatePage({
               {templates.map((template) => (
                 <div
                   key={template.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className="flex flex-col gap-3 rounded-lg border p-4 md:flex-row md:items-center md:justify-between"
                 >
-                  <div className="flex items-start gap-3">
-                    <FileText className="size-5 mt-0.5 text-muted-foreground" />
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{template.name}</span>
+                  <div className="flex min-w-0 flex-1 items-start gap-3">
+                    <FileText className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="min-w-0 break-words font-medium">{template.name}</span>
                         {template.isActive ? (
                           <Badge className="bg-green-600">Aktif</Badge>
                         ) : (
@@ -385,13 +389,13 @@ export default function TemplatePage({
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2 md:justify-end">
                     {!template.isActive && (
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleSetActive(template.id)}
-                        className="gap-1"
+                        className="flex-1 gap-1 md:flex-none"
                       >
                         <CheckCircle2 className="size-3" />
                         Aktifkan
@@ -401,7 +405,7 @@ export default function TemplatePage({
                       variant="ghost"
                       size="sm"
                       onClick={() => handleDelete(template.id)}
-                      className="text-destructive gap-1"
+                      className="flex-1 text-destructive gap-1 md:flex-none"
                     >
                       <Trash2 className="size-3" />
                       Hapus
