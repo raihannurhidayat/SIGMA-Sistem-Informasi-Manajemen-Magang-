@@ -1,7 +1,7 @@
 "use client"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { FileText, ExternalLink } from "lucide-react"
 import { DocumentType } from "@/generated/prisma/enums"
 
@@ -51,14 +51,21 @@ export function DocumentDialog({ internName, documents, open, onClose }: Documen
                   <span className="text-sm font-medium">{cfg.label}</span>
                 </div>
                 {doc?.fileUrl ? (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => window.open(`/api/documents/${doc.id}/file`, "_blank")}
+                  // <Button
+                  //   variant="outline"
+                  //   size="sm"
+                  //   onClick={() => window.open(`/api/documents/${doc.id}/file`, "_blank")}
+                  // >
+                  //   Buka
+                  //   <ExternalLink className="ml-1 size-3" />
+                  // </Button>
+                  <a
+                    href={`/api/documents/${doc.id}/file?download=1`}
+                    className={buttonVariants({ variant: "outline", size: "sm" })}
+                    aria-label={`Unduh ${document.title}`}
                   >
-                    Buka
                     <ExternalLink className="ml-1 size-3" />
-                  </Button>
+                  </a>
                 ) : (
                   <span className="text-xs text-muted-foreground">Belum Ada</span>
                 )}
